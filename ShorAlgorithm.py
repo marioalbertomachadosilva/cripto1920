@@ -3,20 +3,25 @@ from fractions import Fraction
 import math
 import random
 
-#Z = int(input("Insert number to be factorized:\n"))
+N = int(input("Insert number to be factorized:\n"))
 
-
-
+"""
 def Shor(N):
     factors=[]
-    n,t = size_input(N)
+    
     x = random.randint(2,N-1)
     if math.gcd(x,N)!=1:
         #we have at least a factor of N in gcd(x,N), let's go get it!
         return 0
     else:
         n_register=np.zeros()
+"""
 
+def obtain_x(Z):
+    y=random.randint(2,Z-1)
+    while(math.gcd(y,Z)!=1):
+        y=random.randint(2,Z-1)
+    return y
 
 def size_input(x):
     "Determines the dimensions t,n of the initialized state."
@@ -56,7 +61,42 @@ def get_continued_fraction(Y,n):
         return Fraction(1,Y[0]+get_continued_fraction(Y[1:],n))
 
 
-print("convergents =" ,list_convergents(853,2048))
+def v_x(x,t,N,two_t):
+    xmodn=np.empty((two_t,1))
+    xmodn[0]=1
+    for j in range(1,two_t):
+        xmodn[j]= (x*xmodn[j-1])%N
+    return xmodn
+
+
+def states_measure(z,two_t):
+    r=random.randint(0,two_t-1)
+    m=z[r]
+    indices=np.where(z==m)
+    return indices
+
+
+n,t = size_input(N)
+
+two_t=2**t
+
+print("size of registers n,t:",n,t)
+
+#picking x
+x = obtain_x(N)
+
+print("Picked x =%i" % x)
+
+#applying V_x to all registers
+modsn=v_x(x,t,N,two_t)
+
+#the resulting states of the first register after measuring the second
+result=states_measure(modsn,two_t)
+
+
+
+
+#print("convergents =" ,list_convergents(853,2048))
 
 """
 def continued_fraction(x: list):
